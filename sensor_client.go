@@ -22,6 +22,7 @@ type worker struct {
 	serverPort  int
 }
 
+// 여러 goroutine에서 동시에 사용하므로 동기화 필요
 type counter struct {
 	mutex sync.Mutex
 	num   int

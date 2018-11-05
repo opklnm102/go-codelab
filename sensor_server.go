@@ -25,6 +25,10 @@ type LogContent struct {
 	sensorName string
 }
 
+// ListenAndServe에서 ServeHTTP()를 가지는 Handler interface 필요
+// chan T  T type의 데이터를 r/w 가능
+// chan<- float64  float64 데이터 r만 가능
+// <-chan int int 데이터 w만 가능
 type GyroHandler struct {
 	buf chan<- LogContent
 }
@@ -37,6 +41,8 @@ type TempHandler struct {
 	buf chan<- LogContent
 }
 
+// struct의 method를 정의하기 위해 pointer receiver 사용
+// TempHandler is 온/습도 센서에서 받은 데이터 처리
 func (m *TempHandler) ServeHTTP(w http.ResponseWriter, req *http.Request) {
 	var data models.TempSensor
 
@@ -139,5 +145,6 @@ func main() {
 	go http.ListenAndServe(":8003", tempHandler)
 	go fileLogger(logBuf)
 
+	// goroutine이 살아있을 수 있게 main()의 종료를 막는다
 	wg.Wait()
 }
